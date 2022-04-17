@@ -28,12 +28,12 @@ With MHN serving as a sort of SIEM, Dionaea is the service that will be monitori
 ![image](https://user-images.githubusercontent.com/66766340/150939244-6b87e92f-8efe-4327-a853-8e4b5c22f04e.png)
 
 ### HoneyMap
-<img src="https://github.com/colton-gabertan/xcjg-honeypot/blob/Index/honeymap1.gif">
+![HoneyMap](/assets/honeymap.gif)
 
 From here we have a clean UI to view some interesting stats; however, my end goal with the honeypot was to collect malware samples. To do so, in the honeypot server, I used `screen` to run a continuous `tcpdump` that would write to a `.pcap` file. After letting it run and collect some traffic, I `scp`ed the pcap and viewed the data with `wireshark` in my FLAREVM. We also have the option to export the traffic logs into a `.json` from the honeypot.
 
 ### Continuous `tcpdump` as a Detached Process
-<img src="https://github.com/colton-gabertan/xcjg-honeypot/blob/Index/tcpdump.gif">
+![tcpDump](/assets/tcpdump.gif)
 
 Thanks to `wireshark`, we can actually download the intercepted data. At this point, we can have Dionaea collect samples that it can recognize, and we'll have the traffic to export any interesting binary data that comes in as well. This feature is what allows us to pull any binaries or malicious traffic containing code into our malware analysis environment. We can hash files to cross-check samples with databases such as [VirusTotal], check to see if any antivirus scans (like malwarebytes, bitdefender, etc.) will pick up on our samples, and even get into reverse engineering live malware.
 
