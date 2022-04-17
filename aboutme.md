@@ -4,9 +4,14 @@ permalink: "/about/"
 layout: page
 ---
 
-<div style="text-align: center;">
-![image](https://user-images.githubusercontent.com/66766340/163707952-70edc382-d517-418c-a0de-274f72cb3a2b.png)
-</div>
+<img
+     style-"display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 30%;"
+     src="https://user-images.githubusercontent.com/66766340/163707952-70edc382-d517-418c-a0de-274f72cb3a2b.png"
+     alt="pfp">
+</img>
 
 I'm Colton Gabertan. My goal is to immerse myself in all things infosec and contribute to the overall security posture of anyone I have the pleasure of working with. I specialize in malware analysis & reverse engineering and work in this space on the FLARE team at [Mandiant]!
 
