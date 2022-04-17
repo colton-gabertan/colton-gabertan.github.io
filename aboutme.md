@@ -5,7 +5,7 @@ layout: page
 ---
 
 <p align="center">
-  <img width="300" height="300" src="https://user-images.githubusercontent.com/66766340/163708556-faeac7cc-9495-48b1-99c1-f68fe219fc82.png" alt="pfp"/>
+  <img width="400" height="300" src="https://user-images.githubusercontent.com/66766340/163708556-faeac7cc-9495-48b1-99c1-f68fe219fc82.png" alt="pfp"/>
 </p>
 
 I'm Colton Gabertan. My goal is to immerse myself in all things infosec and contribute to the overall security posture of anyone I have the pleasure of working with. I specialize in malware analysis & reverse engineering and work in this space on the FLARE team at [Mandiant]!
