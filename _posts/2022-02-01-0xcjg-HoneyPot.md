@@ -3,8 +3,6 @@ title: "0xcjg HoneyPot"
 layout: post
 ---
 
-# Security Research: Basic Malware HoneyPot Project
-
 ## Overview:
 
 This project is what's known as a [honeypot]. Essentially, it is a fake server used to bait for cyber attacks. We intentionally leave it vulnerable in order to gain an understanding of how one conducts their attacks. In my particular honeypot, I have it set up specifically to try to detect and collect malware samples for further research and reverse engineering practice.
