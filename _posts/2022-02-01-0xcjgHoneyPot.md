@@ -1,6 +1,7 @@
 ---
 title: "0xcjg HoneyPot"
 layout: post
+categories: media
 ---
 
 # Security Research: Basic Malware HoneyPot Project
