@@ -10,6 +10,7 @@ This project is what's known as a [honeypot]. Essentially, it is a fake server u
 > * [Dionaea]
 > * [FLAREVM]
 
+
 ## Setup:
 
 Due to my intentions with the honeypot, I did not see the need to beef it up and make it look particularly enticing for an attacker to try to infiltrate and escalate privileges. Mine was to serve as more of a monitor of internet traffic to see what worms are floating around and propogating systems.
