@@ -1,4 +1,6 @@
 ---
+title: "NSA CodeBreaker 2021"
+layout: post
 ---
 
 The 2021 Codebreaker Challenge consists of a series of tasks that are worth a varying amount of points based upon their difficulty. Schools will be ranked according to the total number of points accumulated by their students. Solutions may be submitted at any time for the duration of the Challenge.
