@@ -3,8 +3,10 @@ title: "About me"
 permalink: "/about/"
 layout: page
 ---
-
-![image](/assets/face.jpg)
+<div class="large">
+  ![image](/assets/face.jpg)
+</div>
+  
 
 I'm Colton Gabertan. My goal is to immerse myself in all things infosec and contribute to the overall security posture of anyone I have the pleasure of working with. I specialize in malware analysis & reverse engineering and work in this space on the FLARE team at [Mandiant]!
 
