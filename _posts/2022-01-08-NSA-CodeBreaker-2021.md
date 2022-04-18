@@ -29,7 +29,7 @@ Good luck. We hope you enjoy the challenge!
 * [task05] - Docker Analysis
 * [task06] - Reverse Engineering
 
-[task01]: https://colton-gabertan.github.io/task01/
+[task01]: /task01/
 [task02]: https://github.com/colton-gabertan/NSACodeBreaker2021/blob/task02/README.md
 [task03]: https://github.com/colton-gabertan/NSACodeBreaker2021/blob/task03/README.md
 [task04]: https://github.com/colton-gabertan/NSACodeBreaker2021/blob/task04/README.md
