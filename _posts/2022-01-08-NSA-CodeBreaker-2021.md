@@ -30,8 +30,8 @@ Good luck. We hope you enjoy the challenge!
 * [task06] - Reverse Engineering
 
 [task01]: /task01/
-[task02]: https://github.com/colton-gabertan/NSACodeBreaker2021/blob/task02/README.md
-[task03]: https://github.com/colton-gabertan/NSACodeBreaker2021/blob/task03/README.md
-[task04]: https://github.com/colton-gabertan/NSACodeBreaker2021/blob/task04/README.md
-[task05]: https://github.com/colton-gabertan/NSACodeBreaker2021/blob/task05/README.md
-[task06]: https://github.com/colton-gabertan/NSACodeBreaker2021/blob/task06/README.md
+[task02]: /task02/
+[task03]: /task03/
+[task04]: /task04/
+[task05]: /task05/
+[task06]: /task06/
