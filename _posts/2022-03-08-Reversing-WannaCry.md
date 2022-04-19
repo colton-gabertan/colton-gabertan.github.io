@@ -12,6 +12,7 @@ This repo will be going over my process of analysis for this sample, explaining 
 * Finding host-/ network-based signatures for detection
 * Determining exactly what the malicious binary does from high to low level
 
+
 ---
 > Tools Used: \
 > *all are included in the FLAREVM
@@ -22,7 +23,6 @@ This repo will be going over my process of analysis for this sample, explaining 
 > * [Resource Hacker]
 > * [Detect It Easy]
 > * [HxD]
-
 
 ## launcher.dll Analysis - Static:
 
