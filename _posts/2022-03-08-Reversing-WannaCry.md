@@ -67,14 +67,14 @@ Onto the next function that gets called by `PlayGame()`, `FUN_100010ab()`. Withi
 ![image](https://user-images.githubusercontent.com/66766340/152450092-c8f8c213-acb1-402a-b1fa-8b72ac505540.png)
 
 With this information, hopping back into `PlayGame()`, we can see that it is the function responsible for unpacking the rest of the malware and running it as a process on the host machine. This technique of creating its own process is a bit of a loud tactic. If we opened up the task manager, we would be able to see it running and just kill it from there.
-> A more sophisticated technique would be to attach itself to a running process. It would do so by locating a running process, allocating memory, and injecting code into the it. This can be referred to as "Process Injection".  
+> A more sophisticated technique would be to attach itself to a running process. It would do so by locating a running process, allocating memory, and injecting code into it. This can be referred to as "Process Injection".  
 
 ### `PlayGame() Re-visited`
 ![image](https://user-images.githubusercontent.com/66766340/152451395-425a011a-1448-4fe6-81d6-54498124d5ae.png)
 
 Essentially, this initial binary hides the rest of the malware by storing an embedded program into its resources, which it later calls upon to continue execution. This is more likely where we will see the main functionality of WannaCry. We know for sure that it looked for a resource called 101. So, I deployed Resource Hacker on the binary to find resource 101 stored in a folder called "W". From here, I extracted the resource in to a separate .bin file, W101.bin. 
 
-### Recap - Loading Via Process Injection:
+### Recap - Loading Via Process Creation:
 
 Just to solidify what we've observed so far, WannaCry begins stealthily by writing one of the binary's resources into an executable file, and executing it as a process.
 
