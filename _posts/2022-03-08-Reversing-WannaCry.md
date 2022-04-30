@@ -33,23 +33,23 @@ Before disassembling the binary, I wanted to take a look at the file headers to 
 
 One place I like to start is in the import directory to see what .exe's or .dll's that this malware tries to use. There are two imported, `KERNEL32.dll` and `MSVCRT.dll`.
 
-### File Header Info
 ![image](https://user-images.githubusercontent.com/66766340/152454687-38cf8643-3eb8-41f1-91a3-3424f62b41ed.png)
+> File Header Info
 
 KERNEL32.dll is used for core functions such as handling memory, files, and hardware. A closer look at MSVCRT.dll and we can find ntdll.dll, which is unusual for regular programs to import. And, it is used as an interface to the Windows kernel. I wanted to double check that the binary wasn't packed, with PEiD. Sure enough, it's detected as a C++ binary that is used as a dynamic link library.
 
-### PEiD Info
 ![image](https://user-images.githubusercontent.com/66766340/152456233-8c3edbfa-7107-4589-b90a-e4adac35fa81.png)
+> PEiD Info
 
 From here, I loaded the sample into a new Ghidra project and started poking around to gather basic information about the binary. I tend to like starting by taking a look at the functions, and in this instance, the one that pokes out is called `PlayGame()`.
 
-### `PlayGame()` Fuction
 ![image](https://user-images.githubusercontent.com/66766340/152134039-51bc9b4d-5f93-45e8-ba7d-3d88f3ff2859.png)
+> `PlayGame()` Function
 
 A peek at its decompilation and we're greeted by a call to `sprintf`, meaning it begins by writing to a string. Its parameters are already pretty clear that it forms a path. I noted it as a pre-comment: `C:\WINDOWS\mssecsvc.exe`. I also decided to rename the string it was writing to as `mssecsvc_path`.
 
-### Decompilation of `PlayGame()`
 ![image](https://user-images.githubusercontent.com/66766340/152135700-5f49524f-0737-41a4-a207-a2ce2850e2a9.png)
+> Decompilation of `PlayGame()`
 
 Out of curiosity, I decided to search up the name of this executable to see if it was a common Microsoft binary, or if it was a malicious one trying to hide in plain sight. Just to confirm that I am working with WannaCry, `mssecsvc.exe` is a known, common, [host-based signature]. 
 
@@ -57,20 +57,20 @@ Pressing further into this function, there is a call to `FUN_10001016()`. A quic
 
 Since the function is all about resource handling, it was fitting to rename it to `write_101_to_mssecsvc()`. It also returned int values, so I changed the function signature to ensure that it was of the proper form in the decompilation.
 
-### Decompilation of `write_101_to_mssecsvc()`
 ![image](https://user-images.githubusercontent.com/66766340/152451220-96d50783-ac11-4ac5-8922-940b2731ded6.png)
+> Decompilation of `write_101_to_mssecsvc()`
 
 Onto the next function that gets called by `PlayGame()`, `FUN_100010ab()`. Within the declared variables, there are two structs, `_STATUPINFOA` and `_PROCESS_INFORMATION`, I renamed the local variables accordingly to `startup_info` and `process_type`. These two structs are used to create processes. I took the liberty to research exactly what the initialized flags do and commented the function above each line. Seeing that this function creates a process from the `mssecsvc_path`, it was fitting to rename it to `createBadProcess()`
 > `CreateProcessA()` [documentation]
 
-### Decompilation of `createBadProcess()`
 ![image](https://user-images.githubusercontent.com/66766340/152450092-c8f8c213-acb1-402a-b1fa-8b72ac505540.png)
+> Decompilation of `createBadProcess()`
 
 With this information, hopping back into `PlayGame()`, we can see that it is the function responsible for unpacking the rest of the malware and running it as a process on the host machine. This technique of creating its own process is a bit of a loud tactic. If we opened up the task manager, we would be able to see it running and just kill it from there.
 > A more sophisticated technique would be to attach itself to a running process. It would do so by locating a running process, allocating memory, and injecting code into it. This can be referred to as "Process Injection".  
 
-### `PlayGame() Re-visited`
 ![image](https://user-images.githubusercontent.com/66766340/152451395-425a011a-1448-4fe6-81d6-54498124d5ae.png)
+> `PlayGame()` Revisited
 
 Essentially, this initial binary hides the rest of the malware by storing an embedded program into its resources, which it later calls upon to continue execution. This is more likely where we will see the main functionality of WannaCry. We know for sure that it looked for a resource called 101. So, I deployed Resource Hacker on the binary to find resource 101 stored in a folder called "W". From here, I extracted the resource in to a separate .bin file, W101.bin. 
 
@@ -79,20 +79,21 @@ Essentially, this initial binary hides the rest of the malware by storing an emb
 Just to solidify what we've observed so far, WannaCry begins stealthily by writing one of the binary's resources into an executable file, and executing it as a process.
 
 ![image](https://user-images.githubusercontent.com/66766340/153566969-82ea565e-d7b6-4eb0-b6a7-669a2eb84eb0.png)
+> Code execution flow chart
 
 ## mssecsvc.exe Analysis - Static:
 
 After extracting the resource, I took a look at this binary via CFF Explorer and saw that we will have to dig further to gain more intel on it.
 
-### CFF Explorer
 ![image](https://user-images.githubusercontent.com/66766340/153568475-d8fd1360-5731-4dd8-ba99-a8705e4a7587.png)
+> CFF Explorer on W101
 
 Although, we can't get the resource to be detected as a PE file, pressing on with Ghidra almost says otherwise. There are no imports, which is odd, and a bunch of functions. A lot more than the binary that created the process. 
 
 After finding it strange that there are no imports detected by the other utilities, I looked at the strings of the binary and it became clear that this binary contains PE file format information along with various imports and possibly more exports.
 
-### W101 Strings
 ![image](https://user-images.githubusercontent.com/66766340/153569755-fe3b82a8-bea6-4757-b71e-0627ca8dd902.png)
+> W101 Strings
 
 Based on that snippet alone, it's apparent that this binary could have a lot of power with the ability to write to files, create them, launch processes, and more. However, before moving forward or resorting to dynamic analysis of `launcher.dll` to extract the file, we can take a closer look at the extracted resource and see if we can resolve the file format issue statically.
 
@@ -100,10 +101,52 @@ Based on that snippet alone, it's apparent that this binary could have a lot of 
 
 Opening the extracted resource with a hex editor, we can see that it's just a couple of bytes that break our desired format. PE files begin with an `IMAGE_DOS_SIGNATURE` at offset 0. This can be identified as ascii `MZ` or in hex, `4D 5A`. Here, we can see that offset 0 has a couple of bytes, before reaching the IMAGE_DOS_SIGNATURE. 
 
-### Unwanted bytes
 ![image](https://user-images.githubusercontent.com/66766340/156541450-38644ee2-5463-4462-8d92-976dadf99489.png)
+> Unwanted bytes
 
 Simply deleting these bytes and saving the rest of the hexdump allows us to export it in proper PE format. Thanks to the analysis conducted earlier, it is a safe bet to name it `mssecsvc.exe`.
+
+### Further Unpacking
+
+Similarly to the analysis of the `launcher.dll`, we will continue to peel back the layers of this piece of malware. With `mssecsvc.exe` loaded into a new Ghidra project, we can take a peek at the functions and find another one that's similar to `PlayGame()` from the other binary. I've opted to re-name it to `create_mssecsvc_service()` as it takes advantage of more Windows API calls to create this malicious service. 
+
+![image](https://user-images.githubusercontent.com/66766340/166123444-99c965e8-732a-45af-b81d-071344749543.png)
+> `create_mssecsvc_service()`
+
+One interesting to note is that creates another string with `sprintf()`, and it defines it with the path to an executable and runs it with what appears to be command line arguments, specifically `-m security`. The flags passed to `CreateServiceA()` also ensure that it has full access, runs as its own process, and runs on start-up.
+
+A couple of host-based indicators would include the strings that define the service name and display name:
+```
+"mssecsvc2.0"
+"Microsoft Security Center (2.0)"
+```
+> Host-based indicator strings
+
+From here, there is another function that does a handful of things. Taking advantage of the Windows API, it creates and writes files, and also creates another process. I've named it `write_taskche_and_qeriuwjhrf()`.
+
+It begins by defining some pointers to the functions from `kernel32.dll`. We can rename and re-type these variables that store the pointers to it's appropriate corresponding function. This makes it easier to follow in the disassembly and decompilation as we know which function get's called in which order.
+
+![image](https://user-images.githubusercontent.com/66766340/166123956-6e287b31-2076-4813-97cf-8e1e733cc2a9.png)
+> Pointers to Windows API functions
+
+Pushing a bit further into this function, it also locates resource 1831 and writes it to `taskche.exe`. It then defines a path for `taskche.exe` as well as one for `qeriuwjhrf`. Upon first glance at the `sprintf()` calls, Ghidra's decompilation does not compensate for a differing amount of passed arguments. So, fixing this by editing the function signature produces a cleaner output in the decompilation, revealing the format string being written.
+> another way to check is to see the arguments pushed onto the stack in the disassembly
+
+![image](https://user-images.githubusercontent.com/66766340/166124266-468a609b-3c3f-4178-8bca-b047143c1409.png)
+> `sprintf()` args in cdecl calling convention
+
+![image](https://user-images.githubusercontent.com/66766340/166124100-273c7ba2-5ae6-4437-b124-730968e60f64.png)
+> `taskche.exe` path & `qeriuwjhrf` path
+
+These serve as more host-based indicator strings:
+```
+"C:\Windows\taskche.exe"
+"C:\Windows\qeriuwjhrf"
+```
+
+The malware then tries to move `taskche.exe` to the path specified for `qeriuwjhrf`. My theory as to why this process occurs is because if the malware were to infect the same system multiple times, this may serve as a check to see if the computer has already been infected or not. This would be based on the existance of the `qeriuwjhrf` path.
+
+
 
 [here]: /0xcjg-HoneyPot/
 [FLAREVM]: https://github.com/mandiant/flare-vm
