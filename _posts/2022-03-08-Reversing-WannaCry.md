@@ -146,6 +146,30 @@ These serve as more host-based indicator strings:
 
 The malware then tries to move `taskche.exe` to the path specified for `qeriuwjhrf`. My theory as to why this process occurs is because if the malware were to infect the same system multiple times, this may serve as a check to see if the computer has already been infected or not. This would be based on the existance of the `qeriuwjhrf` path.
 
+After this `MoveFileExA()` call, it begins to set up the parameters to call `CreateProcessA()` with some obscure-looking string modifications. This may be due to an inaccurate decompilation/ disassembly, so I decided to shelf the analysis, and simply accept that it calls `CreateProcessA()` with the file handle that points to `taskche.exe`.
+
+![image](https://user-images.githubusercontent.com/66766340/166895138-6313b7d8-180d-4341-b817-42e9347fb3a9.png)
+###### call to `CreateProcessA` from `taskche.exe`
+
+Going back over the disassembly of `write_taskche_and_qeriuwjhrf()`, I investigated a local variable stored on the stack at location `[ebp-0x103]`. Its cross-reference pointed to what appears to be the return address of the previous function, which looks to be the `main()` of `taskche.exe`.
+
+![image](https://user-images.githubusercontent.com/66766340/166895734-0bad457b-6cb3-4f85-a70f-44d209d93d60.png)
+###### `taskche.exe`'s main()
+
+With this, let's once again re-cap with the execution of `mssecsvc.exe`. It begins by creating a service from the executable, running it with the arguments of `-m security`. It then writes its resource 1831 to another executable called taskche.exe and moves this file to `C:\Windows\queriuwjhrf`, has some string modifications on `taskche.exe`'s path, and subsequently creates another process from it.
+
+![image](https://user-images.githubusercontent.com/66766340/166897671-3cb596f6-f585-4196-a9d9-14dd1a88b2e5.png)
+###### `mssecsvc.exe`'s execution re-cap
+
+With our static analysis coming to somewhat of a halt at this point, we can further unpack the malware and dive into more of its functionality. At this point, it has established itself as a malicious service that has full system access and runs on startup.
+
+## `taskche.exe` Analysis - Static
+
+Since we know that it uses its resource 1831 to write `taskche.exe`, this will contain the data we need to analyze the binary. Once again deploying Resource Hacker, we can see that the offset 0 contains the `IMAGE_DOS_SIGNATURE` of 4D 5A in hex. This indicates that we are in fact dealing with another PE executable file. We can then save this resource as `taskche.exe` and begin further analysis of the malware.
+
+![image](https://user-images.githubusercontent.com/66766340/166899513-499cd2c0-5af2-4ca7-acd1-79abcfdd648d.png)
+###### R resource - taskche.exe
+
 
 
 [here]: /0xcjg-HoneyPot/
