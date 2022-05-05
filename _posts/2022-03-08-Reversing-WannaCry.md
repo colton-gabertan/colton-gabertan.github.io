@@ -3,8 +3,6 @@ title: "Live Malware Reverse Engineering: WannaCry Ransomware (In Progress)"
 layout: post
 ---
 
-## Overview:
-
 After becoming interested in malware analysis and reverse engineering, I decided to spin up a honeypot to collect live samples of malware. When analyzing the binaries that my honeypot managed to capture, I found that the most common one was detected as the infamous WannaCry Ransomware.
 > *If you're interested, I have a report of my honeypot project [here]*
 
@@ -12,6 +10,13 @@ This repo will be going over my process of analysis for this sample, explaining 
 * Finding host-/ network-based signatures for detection
 * Determining exactly what the malicious binary does from high to low level
 
+
+---
+## Table of Contents:
+
+* [launcher.dll Analysis - Static](#launcher.dll-static)
+* [mssecsvc.exe Analysis - Static](#mssecsvc.exe-static)
+* [taskche.exe Analysis - Static](#taskche.exe-static)
 
 ---
 > Tools Used: \
@@ -24,7 +29,7 @@ This repo will be going over my process of analysis for this sample, explaining 
 > * [Detect It Easy]
 > * [HxD]
 
-## launcher.dll Analysis - Static:
+## launcher.dll Analysis - Static: <a name="launcher.dll-static"></a>
 
 To begin, I decided to isolate my malware analysis environment by working in a virtual machine and cutting off its connection to my network. WannaCry is commonly spread as a worm, which is exactly how I caught it. Setting up the vm environment without network connectivity is essential in ensuring that none of it leaked into my local network during analysis.
 Due to our analysis being static, meaning we will not run the binary, there is low risk to us; however, it is a good habit to take precautions when working with actual malicious software.
@@ -81,7 +86,7 @@ Just to solidify what we've observed so far, WannaCry begins stealthily by writi
 ![image](https://user-images.githubusercontent.com/66766340/153566969-82ea565e-d7b6-4eb0-b6a7-669a2eb84eb0.png)
 ###### Code execution flow chart
 
-## mssecsvc.exe Analysis - Static:
+## mssecsvc.exe Analysis - Static: <a name="mssecsvc.exe-static"></a>
 
 After extracting the resource, I took a look at this binary via CFF Explorer and saw that we will have to dig further to gain more intel on it.
 
@@ -163,7 +168,7 @@ With this, let's once again re-cap with the execution of `mssecsvc.exe`. It begi
 
 With our static analysis coming to somewhat of a halt at this point, we can further unpack the malware and dive into more of its functionality. At this point, it has established itself as a malicious service that has full system access and runs on startup.
 
-## `taskche.exe` Analysis - Static
+## `taskche.exe` Analysis - Static <a name="taskche.exe-static"></a>
 
 Since we know that it uses its resource 1831 to write `taskche.exe`, this will contain the data we need to analyze the binary. Once again deploying Resource Hacker, we can see that the offset 0 contains the `IMAGE_DOS_SIGNATURE` of 4D 5A in hex. This indicates that we are in fact dealing with another PE executable file. We can then save this resource as `taskche.exe` and begin further analysis of the malware.
 
