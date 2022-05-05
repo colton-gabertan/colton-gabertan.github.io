@@ -86,6 +86,8 @@ Just to solidify what we've observed so far, WannaCry begins stealthily by writi
 ![image](https://user-images.githubusercontent.com/66766340/153566969-82ea565e-d7b6-4eb0-b6a7-669a2eb84eb0.png)
 ###### Code execution flow chart
 
+---
+
 ## mssecsvc.exe Analysis - Static: <a name="mssecsvc.exe-static"></a>
 
 After extracting the resource, I took a look at this binary via CFF Explorer and saw that we will have to dig further to gain more intel on it.
@@ -167,6 +169,8 @@ With this, let's once again re-cap with the execution of `mssecsvc.exe`. It begi
 ###### `mssecsvc.exe`'s execution re-cap
 
 With our static analysis coming to somewhat of a halt at this point, we can further unpack the malware and dive into more of its functionality. At this point, it has established itself as a malicious service that has full system access and runs on startup.
+
+---
 
 ## `taskche.exe` Analysis - Static <a name="taskche.exe-static"></a>
 
