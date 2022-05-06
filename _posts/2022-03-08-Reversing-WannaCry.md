@@ -129,13 +129,15 @@ To get a better grip on it, we must edit the function signature to reflect the p
 ![image](https://user-images.githubusercontent.com/66766340/167208575-9dcbbf34-c301-43c1-a218-e767339284c1.png)
 ###### Internet functionality
 
-After the `InternetCloseHandle()` calls, it will either return a boolean true or false. After these calls, there is another custom function, which we will press into next.
+Executing the `InternetCloseHandle()` calls, it will either return a boolean true or false. After these calls, there is another custom function, which we will press into next.
 
 I've dubbed this one `execution_handling()` as we can see that the first thing it does is call `GetModuleFileNameA()` with the path to itself, and checks the argument count. If it is ran with no arguments, it calls another function, which I've dubbed `taskche_init()`, and returns.
 > we will press into `taskche_init()` later on.
 
 ![image](https://user-images.githubusercontent.com/66766340/167210458-61b03861-f4ff-4794-80df-cc9c199a697d.png)
 ###### argc checking for execution flow
+
+### Execution With Command Line Args
 
 If `mssecsvc.exe` was called with an argument, it will skip over `taskche_init()` and open a service called `mssecsvc2.0`. If successful, it will run another function that can modify the service configs.
 
@@ -179,10 +181,6 @@ It then calls `InitializeCriticalSection` to set up a critical section that the 
 ###### crypto_provider()
 
 Back to the caller, `wsa_startup()`, it continues execution with another defined function that calls some file handling modules. 
-
-
-
-
 
 ### Further Unpacking
 
@@ -263,9 +261,6 @@ Furthermore, we can also take a look at the imports of this executable, and find
 ###### taskche.exe's imports
 
 Pressing on to its disassembly in Ghidra, we are greeted by an entry point in the functions. This will serve as the basis of our analysis for `taskche.exe`. 
-
-
-
 
 [here]: /0xcjg-HoneyPot/
 [FLAREVM]: https://github.com/mandiant/flare-vm
