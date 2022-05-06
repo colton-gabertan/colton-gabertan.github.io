@@ -151,7 +151,7 @@ These serve as more host-based indicator strings:
 "C:\Windows\qeriuwjhrf"
 ```
 
-The malware then tries to move `taskche.exe` to the path specified for `qeriuwjhrf`. My theory as to why this process occurs is because if the malware were to infect the same system multiple times, this may serve as a check to see if the computer has already been infected or not. This would be based on the existance of the `qeriuwjhrf` path.
+The malware then tries to move `taskche.exe` to the path specified for `qeriuwjhrf`. My theory as to why this process occurs is because the malware may be checking to see if it is the first time it is being ran on the system. The indication of this would be the existence of the `queriuwjhrf` path. Seeing that it is programmed to accept command line inputs, there may be other flags that alter its execution in subsequent instances. 
 
 After this `MoveFileExA()` call, it begins to set up the parameters to call `CreateProcessA()` with some obscure-looking string modifications. This may be due to an inaccurate decompilation/ disassembly, so I decided to shelf the analysis, and simply accept that it calls `CreateProcessA()` with the file handle that points to `taskche.exe`.
 
@@ -172,12 +172,27 @@ With our static analysis coming to somewhat of a halt at this point, we can furt
 
 ---
 
-## `taskche.exe` Analysis - Static <a name="taskche.exe-static"></a>
+## taskche.exe Analysis - Static <a name="taskche.exe-static"></a>
 
 Since we know that it uses its resource 1831 to write `taskche.exe`, this will contain the data we need to analyze the binary. Once again deploying Resource Hacker, we can see that the offset 0 contains the `IMAGE_DOS_SIGNATURE` of 4D 5A in hex. This indicates that we are in fact dealing with another PE executable file. We can then save this resource as `taskche.exe` and begin further analysis of the malware.
 
 ![image](https://user-images.githubusercontent.com/66766340/166899513-499cd2c0-5af2-4ca7-acd1-79abcfdd648d.png)
 ###### R resource - taskche.exe
+
+With the analysis so far, we've identified a theme as to how it unpacks itself. It's not very sophisticated in this manner as all it has been doing so far is writing binaries from its resource section into new .exe's to be dropped. Curious to see if there is more to come, we can take a peek at its resource section using CFF Explorer VIII.
+
+Surely enough, we can see that there is more data stored here, likely to be more files or malware that will get installed and ran. 
+
+![image](https://user-images.githubusercontent.com/66766340/167108323-7e79ed20-09d2-4f48-8b52-234c9730ec52.png)
+###### taskche.exe's resources
+
+Furthermore, we can also take a look at the imports of this executable, and find out that there are tell-tale signs that the malware will likely have network functionality within this PE. The indications of this include WS2_32.dll, iphlpapi.dll, and WININET.dll. The presence of ADVAPI32.dll also opens up an avenue that may indicate that the malware will set up a persistance mechanism on the system. This can typically be done by editing registry keys.
+
+![image](https://user-images.githubusercontent.com/66766340/167109807-917840d5-c27b-4232-942c-d4ebea0518e6.png)
+###### taskche.exe's imports
+
+Pressing on to its disassembly in Ghidra, we are greeted by an entry point in the functions. This will serve as the basis of our analysis for `taskche.exe`. 
+
 
 
 
