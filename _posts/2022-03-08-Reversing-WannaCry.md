@@ -113,6 +113,77 @@ Opening the extracted resource with a hex editor, we can see that it's just a co
 
 Simply deleting these bytes and saving the rest of the hexdump allows us to export it in proper PE format. Thanks to the analysis conducted earlier, it is a safe bet to name it `mssecsvc.exe`.
 
+### WinMain() for mssecsvc.exe
+
+Hopping back into Ghidra to take a look at its disassembly and decompilation, we find a defined entry point, which is some standard code that leads to a `WinMain()` call. Within the WinMain call, the malware continues execution.
+
+Past all of the local variables, we see what appears to be some string manipulation. I believe Ghidra failed to resolve a string, so we will shelf that for now, but we can still see what it does with the data. Upon fixing the variable names and types, the function becomes a bit more clear as to what it's doing with the data.
+
+![image](https://user-images.githubusercontent.com/66766340/167205679-d64863f1-bd0e-4e88-875c-a48dc2cc09ba.png)
+###### string functionality
+
+It appears to be copying the string into a buffer. My name choice is derived from the fact that after this string operation, there are calls to `InternetOpenA()` and `InternetOpenUrlA()`. We may be able to resolve this specific url with dynamic analysis; however, this is confirmation that the malware now has networking functionality and takes advantage of it. 
+
+To get a better grip on it, we must edit the function signature to reflect the parameters and return type of the Windows API calls. One issue I ran into is that Ghidra cannot resolve the HINTERNET return type, but it's simply a handle to be passed to subsequent api calls as per the convention of using this module. If the operation is successful, it will return the handle to be passed, else it returns a NULL.
+
+![image](https://user-images.githubusercontent.com/66766340/167208575-9dcbbf34-c301-43c1-a218-e767339284c1.png)
+###### Internet functionality
+
+After the `InternetCloseHandle()` calls, it will either return a boolean true or false. After these calls, there is another custom function, which we will press into next.
+
+I've dubbed this one `execution_handling()` as we can see that the first thing it does is call `GetModuleFileNameA()` with the path to itself, and checks the argument count. If it is ran with no arguments, it calls another function, which I've dubbed `taskche_init()`, and returns.
+> we will press into `taskche_init()` later on.
+
+![image](https://user-images.githubusercontent.com/66766340/167210458-61b03861-f4ff-4794-80df-cc9c199a697d.png)
+###### argc checking for execution flow
+
+If `mssecsvc.exe` was called with an argument, it will skip over `taskche_init()` and open a service called `mssecsvc2.0`. If successful, it will run another function that can modify the service configs.
+
+![image](https://user-images.githubusercontent.com/66766340/167212120-559f7eb5-5b9e-4fae-9229-d03805d24e95.png)
+###### launching malicious service from mssecsvc.exe
+
+The function which I've dubbed `change_service_configs()` accepts the `SC_HANDLE` and an int value as parameters. Ghidra failed to resolve a bit more data, but the call to `ChangeServiceConfig2A()` may tip us off as to what data may be contained within the `SERVICE_FAILURE_ACTIONS` struct. 
+
+Calling this module, especially with its second paramater as 2, is what refers to the actions being taken if the service fails. It mostly pertains to rebooting, and reset periods.
+
+![image](https://user-images.githubusercontent.com/66766340/167212606-1c2de6cf-0317-48b3-83d9-b750de9eb2c6.png)
+###### change_service_configs()
+
+Upon returning from this function, the malware will initialize members of the `SERVICE_TABLE_ENTRYA` struct with the lpServiceName of `mssecsvc2.0` and an lpServiceProc pointing to a label, which we will investigate further.
+
+![image](https://user-images.githubusercontent.com/66766340/167215352-c003ea98-a8c4-4dad-8ed2-02321de8cd5f.png)
+###### Service Name & Service Procedure Pointer
+
+Within the lpServiceProc label, the malware begins to get into some threading. With the call to `RegisterServiceCtrlHandlerA()`, it passes the service name, along with another `LPHANDLER_FUNCTION` specified by another label. 
+
+![image](https://user-images.githubusercontent.com/66766340/167216554-4a34c262-7f09-471e-849d-3f08dbd74daa.png)
+###### More service procedures
+
+Hopping into this label, there is a switch-case control flow structure that defines some data based on the passed parameter. It will modify regions of data with new integers/flags and set the service status. Shelfing that for now, back in the caller, it will check on the service status, further modify regions of data and re-set the service status. After doing so, there is another defined function that gets into threading. I've dubbed it `parallel_processing()`.
+
+![image](https://user-images.githubusercontent.com/66766340/167217407-0b465c99-7a60-4b63-95aa-360beadc985b.png)
+###### More service handling and Threading
+
+The first function called in `parallel_processing()` calls another process called `WSAStartup()` with the parameters 0x202 for wVersionRequired and a pointer to another struct that contains socket information for networking. 
+
+If it's unsuccessful, it will return from this function back to the caller, but if it is, it will call a function, which I've dubbed `crypto_provider()`.
+
+![image](https://user-images.githubusercontent.com/66766340/167219780-985dee69-229f-4a37-9821-c2e56bb946fe.png)
+###### custom wsa_startup() -> crypto_provider()
+
+Essentially, `crypto_provider()` attempts to call `CryptAcquireContextA()` twice in order to define or get a cryptographic service handle, which is most likely to be used to encrypt files for the ransomware component of the malware. 
+
+It then calls `InitializeCriticalSection` to set up a critical section that the threads will be accessing. One interesting thing to note is that there is a string defined as `"Microsoft Base Cryptographic Provider v1.0"` passed to `CryptAcquireContextA()`. This cryptographic service provider defaults to RSA for public key handling and data encryption. 
+
+![image](https://user-images.githubusercontent.com/66766340/167220333-de6d09ee-9016-40df-81e1-c60cf55604a0.png)
+###### crypto_provider()
+
+Back to the caller, `wsa_startup()`, it continues execution with another defined function that calls some file handling modules. 
+
+
+
+
+
 ### Further Unpacking
 
 Similarly to the analysis of the `launcher.dll`, we will continue to peel back the layers of this piece of malware. With `mssecsvc.exe` loaded into a new Ghidra project, we can take a peek at the functions and find another one that's similar to `PlayGame()` from the other binary. I've opted to re-name it to `create_mssecsvc_service()` as it takes advantage of more Windows API calls to create this malicious service. 
