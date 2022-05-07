@@ -84,7 +84,7 @@ Essentially, this initial binary hides the rest of the malware by storing an emb
 Just to solidify what we've observed so far, WannaCry begins stealthily by writing one of the binary's resources into an executable file, and executing it as a process.
 
 ![image](https://user-images.githubusercontent.com/66766340/153566969-82ea565e-d7b6-4eb0-b6a7-669a2eb84eb0.png)
-###### Code execution flow chart
+###### `PlayGame()`'s execution
 
 ---
 
@@ -137,7 +137,7 @@ I've dubbed this one `execution_handling()` as we can see that the first thing i
 ![image](https://user-images.githubusercontent.com/66766340/167210458-61b03861-f4ff-4794-80df-cc9c199a697d.png)
 ###### argc checking for execution flow
 
-### Execution With Command Line Args
+### Execution With Command Line Args - Service Mode
 
 If `mssecsvc.exe` was called with an argument, it will skip over `taskche_init()` and open a service called `mssecsvc2.0`. If successful, it will run another function that can modify the service configs.
 
@@ -173,18 +173,75 @@ If it's unsuccessful, it will return from this function back to the caller, but 
 ![image](https://user-images.githubusercontent.com/66766340/167219780-985dee69-229f-4a37-9821-c2e56bb946fe.png)
 ###### custom wsa_startup() -> crypto_provider()
 
-Essentially, `crypto_provider()` attempts to call `CryptAcquireContextA()` twice in order to define or get a cryptographic service handle, which is most likely to be used to encrypt files for the ransomware component of the malware. 
+Essentially, `crypto_provider()` attempts to call `CryptAcquireContextA()` twice in order to define or get a cryptographic service handle. This can be used to encrypt files, handle public keys, or perform other cryptographic functions, such as generating random numbers.
 
 It then calls `InitializeCriticalSection` to set up a critical section that the threads will be accessing. One interesting thing to note is that there is a string defined as `"Microsoft Base Cryptographic Provider v1.0"` passed to `CryptAcquireContextA()`. This cryptographic service provider defaults to RSA for public key handling and data encryption. 
 
 ![image](https://user-images.githubusercontent.com/66766340/167220333-de6d09ee-9016-40df-81e1-c60cf55604a0.png)
 ###### crypto_provider()
 
-Back to the caller, `wsa_startup()`, it continues execution with another defined function that calls some file handling modules. 
+Back to the caller, `wsa_startup()`, it continues execution with another defined function, dubbed `redundant_reads()` that calls some file handling modules. This section is a bit tricky to refactor cleanly as it takes advantage of stack-dynamic locals and re-uses them for different purposes. So, for the sake of this write-up I will label them accordingly in the screenshots.
 
-### Further Unpacking
+It begins by allocating some regions in memory with 0's by calling `GlobalAlloc()`, passing 0x40 as a flag to indicate the zero-fill, along with the address of the memory region to allocate. Since `GlobalAlloc()` returns a handle to the allocated object, I named the two variables that the returns get stored into `handle_0` and `handle_1` accordingly.
 
-Similarly to the analysis of the `launcher.dll`, we will continue to peel back the layers of this piece of malware. With `mssecsvc.exe` loaded into a new Ghidra project, we can take a peek at the functions and find another one that's similar to `PlayGame()` from the other binary. I've opted to re-name it to `create_mssecsvc_service()` as it takes advantage of more Windows API calls to create this malicious service. 
+![image](https://user-images.githubusercontent.com/66766340/167244772-688205da-1669-43d3-9ab0-9a70b469af14.png)
+###### Allocating some regions in memory, zero-filled
+
+It then sets an iterator to 0 and enters a do-while loop. There are another two sections in memory that get saved to a variable. Looking at them in the data section, we can see the IMAGE_DOS_SIGNATURES, indicating that the variable it's stored in is a handle to the PE file.
+
+![image](https://user-images.githubusercontent.com/66766340/167244851-a63c8177-3d79-4c12-9e43-23108444f8d5.png)
+![image](https://user-images.githubusercontent.com/66766340/167244870-ece6390f-e0e5-46b8-afa2-ec17dce353fb.png)
+###### Stored PE files
+
+It stores these two file handles in an array, alongside two variables. 
+
+![image](https://user-images.githubusercontent.com/66766340/167245051-3f3f3a03-e4fd-46f0-b675-24a1c91b27e5.png)
+###### Storing PE file handles in an array
+
+After allocating two regions in memory and getting two handles to, what appears to be, two of the same (or similar) PE files, `redundant_reads()` begins its file-handling operations. With a call to `CreateFileA()`, it passes the path_to_mssecsvc, referenced by other functions already. 
+
+This time however, it gives it the right to read file attributes and makes it partly or exclusively ran by the OS. If this process fails, it will free the allocated memory from earlier and return.
+
+![image](https://user-images.githubusercontent.com/66766340/167245848-b3308758-6f31-4a3b-b71e-94e15a9d6245.png)
+###### Changes file attributes of mssecsvc.exe
+
+It then gets the file size and stores it in nNumberOfBytesToRead and stores address_array[0] back into the pe_file_handle. This element in the array is then overwritten with the value in nNumberOfBytesToRead. This looks weird, but it is to allocate memory in this variable to hold the bytes read by the call to `ReadFile()`.
+
+More error checking is performed to ensure that the allocated memory is free'd, the handle gets closed, and the function returns 0.
+
+![image](https://user-images.githubusercontent.com/66766340/167246360-bff88f9b-b6cd-4291-a069-8af724ba3fe9.png)
+###### Stores read bytes into &address_array[0]+1
+
+If successful, it then takes pe_file_handle and pe_file_handle_copy and performs some iterative operations on them. To my knowledge, this would offset the data just a bit. Then it closes the handle and returns with a value of 1.
+
+![image](https://user-images.githubusercontent.com/66766340/167246642-9c0ddce0-1f0f-416a-9f27-862f2b769838.png)
+###### Wrapping up `redundant_reads()`
+
+Returning back to the caller, `wsa_startup()`, the return value of either 0 or 1 is returned. This leads back to the `parallel_processing()` function and stores the int into a local variable. I've called it wsa_crypto_reads_flag as it confirms whether or not these three functions have been performed successfully. If not, it will return from this function. 
+
+Otherwise, it begins two threads. Statically analyzing this portion of the code would be extremely time consuming, so I will glance over them and take note of the key functionality of the threads.
+
+The functions that the first thread runs pertain to some networking enumeration, getting adapter info and ip addresses. The second thread then opens connections and spawns more threads, seemingly for as many ip's on the subnet of the machine. 
+
+WannaCry is known to be a worm, and these threads hold true to that fact. In service mode, mssecsvc.exe will use these threads to connect and exploit as many machines as possible. The two PE files from the `redundant_reads()` function are most likely dropped on the systems, and can be attributed to how loader.dll spreads.
+
+To recap on how mssecsvc.exe behaves when run with command line args, in `execution_handling()` the malware begins by modifying the service configurations to handle the service if it fails to execute. It then calls the lpServiceProc, which points a label containing the call to `parallel_processing()` after registering the service. `parallel_processing()` then gathers WSADATA, a crypto service provider, and creates more files to be dropped. From here, it opens up two main threads that enumerate the computer's network and most likely drops the malicious .dll's on other systems.
+
+![image](https://user-images.githubusercontent.com/66766340/167249828-44f82530-2325-43e6-b774-3fa4b269c4dd.png)
+###### execution with command line arguments recap
+
+With this, we can re-wind to how mssecsvc.exe executes without command line args. Pressing into the previously mentioned, `taskche_init()`.
+
+### Execution Without Command Line Args - Installation
+
+Back to the `execution_handling()` mentioned earlier, if there are no command line args, it will call a function that I've dubbed `taskche_init()`. Similarly to the analysis of the launcher.dll, we find a function that looks similar to `PlayGame()`. There are nothing but two function calls that have installation capabilities.
+
+The first one, I called `create_mssecsvc_service()`, and the second I called `write_taskche_and_queriuwjhrf()`.
+
+![image](https://user-images.githubusercontent.com/66766340/167248720-0a604fac-b8f8-48d4-ad26-20aa7724aa7a.png)
+###### `taskche_init()`
+
+A quick look at `create_mssecsvc_service()` reveals that mssecsvc.exe is re-launched as a service, but this time a little bit differently.
 
 ![image](https://user-images.githubusercontent.com/66766340/166123444-99c965e8-732a-45af-b81d-071344749543.png)
 ###### `create_mssecsvc_service()`
@@ -198,7 +255,7 @@ A couple of host-based indicators would include the strings that define the serv
 ```
 ###### Host-based indicator strings
 
-From here, there is another function that does a handful of things. Taking advantage of the Windows API, it creates and writes files, and also creates another process. I've named it `write_taskche_and_qeriuwjhrf()`.
+From here, `write_taskche_and_qeriuwjhrf()` is executed. Taking advantage of the Windows API, it creates and writes files, and also creates another process.
 
 It begins by defining some pointers to the functions from `kernel32.dll`. We can rename and re-type these variables that store the pointers to it's appropriate corresponding function. This makes it easier to follow in the disassembly and decompilation as we know which function get's called in which order.
 
@@ -227,17 +284,12 @@ After this `MoveFileExA()` call, it begins to set up the parameters to call `Cre
 ![image](https://user-images.githubusercontent.com/66766340/166895138-6313b7d8-180d-4341-b817-42e9347fb3a9.png)
 ###### call to `CreateProcessA` from `taskche.exe`
 
-Going back over the disassembly of `write_taskche_and_qeriuwjhrf()`, I investigated a local variable stored on the stack at location `[ebp-0x103]`. Its cross-reference pointed to what appears to be the return address of the previous function, which looks to be the `main()` of `taskche.exe`.
+With this, let's once again re-cap with the execution of `mssecsvc.exe` without command line args. It begins by creating a service from the executable, running it with the arguments of `-m security`. It then writes its resource 1831 to another executable called taskche.exe and moves this file to `C:\Windows\queriuwjhrf`, has some string modifications on `taskche.exe`'s path, and subsequently creates another process from it.
 
-![image](https://user-images.githubusercontent.com/66766340/166895734-0bad457b-6cb3-4f85-a70f-44d209d93d60.png)
-###### `taskche.exe`'s main()
+![image](https://user-images.githubusercontent.com/66766340/167249007-0719b3c1-b600-4dba-9dc0-e5b1d65f8cc8.png)
+###### execution without command line arguments recap
 
-With this, let's once again re-cap with the execution of `mssecsvc.exe`. It begins by creating a service from the executable, running it with the arguments of `-m security`. It then writes its resource 1831 to another executable called taskche.exe and moves this file to `C:\Windows\queriuwjhrf`, has some string modifications on `taskche.exe`'s path, and subsequently creates another process from it.
-
-![image](https://user-images.githubusercontent.com/66766340/166897671-3cb596f6-f585-4196-a9d9-14dd1a88b2e5.png)
-###### `mssecsvc.exe`'s execution re-cap
-
-With our static analysis coming to somewhat of a halt at this point, we can further unpack the malware and dive into more of its functionality. At this point, it has established itself as a malicious service that has full system access and runs on startup.
+With our static analysis coming to somewhat of a halt at this point, we can further unpack the malware and dive into more of its functionality. 
 
 ---
 
