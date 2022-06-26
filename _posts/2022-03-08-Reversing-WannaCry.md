@@ -43,7 +43,7 @@ As we can see, the `File Type` section tells us that it is a 32-bit Portable Exe
 
 Furthermore, the `File Info` section tells us that it is also written in C++ and is a dll. Even in modern malware, it is still common to see 32-bit binaries as modern systems both support that architecture and it allows authors to work with smaller memory constraints.
 
-When dealing with dll's, especially ones we like to classify as launchers, the malware will typically be able to install and execute other components of the malware. There are many techniques to do so, and we'll be taking a look at how WannaCry does it. 
+When dealing with dll's, especially ones we like to classify as launchers, the malware will typically be able to install and execute other components of the malware. There are many techniques to do so, and we'll be taking a look at how WANACRY does it. 
 
 Exploring within CFF Explorer, we can come across its `Export Directory` and this dll contains one called PlayGame. This is illustrated in Figure 1.1.
 
@@ -143,6 +143,21 @@ To continue our analysis of the full malware, we need to extract the resource no
 
 `mssecsvc.exe`
 
+**Summary & Indicators of Compromise:**
+
+Given that `launcher.dll` contains no networking functionality, this section of the malware does not contain the worm component; however, it is the launcher. It writes its resource section to an executable file to the path:
+
+C:\Windows\mssecsvc.exe
+
+This leaves a host-based indicator to be the presence of `mssecsvc.exe` as well as a process launched from this executable. There is no evidence of any persistence or privilege escalation capabilities.
+
+> **Host-based Indicators:** \
+> File(s) Dropped:
+> * C:\Windows\mssecsvc.exe
+
+
+
+
 ## mssecsvc.exe Analysis - Static: <a name="mssecsvc.exe-static"></a>
 
 **Extracting the Resource:**
@@ -153,3 +168,4 @@ To continue our analysis of the full malware, we need to extract the resource no
 
 
 [here]: https://colton-gabertan.github.io/0xcjg-HoneyPot/
+[FLAREVM]: https://github.com/mandiant/flare-vm
