@@ -149,14 +149,13 @@ Given that `launcher.dll` contains no networking functionality, this section of 
 
 C:\Windows\mssecsvc.exe
 
-This leaves a host-based indicator to be the presence of `mssecsvc.exe` as well as a process launched from this executable. There is no evidence of any persistence or privilege escalation capabilities.
+and executes mssecsvc.exe as a process on the victim system. 
+
+This leaves a host-based indicator to be the presence of `mssecsvc.exe` as well as a process launched from this executable. There is no evidence of any persistence or privilege escalation capabilities for `launcher.dll`.
 
 > **Host-based Indicators:** \
 > File(s) Dropped:
 > * C:\Windows\mssecsvc.exe
-
-
-
 
 ## mssecsvc.exe Analysis - Static: <a name="mssecsvc.exe-static"></a>
 
