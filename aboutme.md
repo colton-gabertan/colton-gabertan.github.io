@@ -4,8 +4,6 @@ permalink: "/about/"
 layout: page
 ---
 
-![About me](/assets/face.jpg)
-
 I'm Colton Gabertan. My goal is to immerse myself in all things infosec and contribute to the overall security posture of anyone I have the pleasure of working with. I specialize in malware analysis & reverse engineering and have experience working in this space on the FLARE team at [Mandiant]!
 
 I previously taught an intro to appsec course for a non-profit organization called [CodePath], which is aimed at providing supplemental computer science and technical training to under-represented groups of people in the tech space. 
