@@ -1,6 +1,6 @@
 title: "0xcjg"
 author: "Colton Gabertan"
-description: "Malware Analyst | Reverse Engineer"
+description: "Infosec Research & Engineering"
 permalink: /:title/
 lang: "en"
 excerpt_separator: "\n\n\n"
@@ -22,7 +22,7 @@ navigation:                # accepts {file, title, url, icon, sidebaricon}
 external:                  # shows a footer with social links - for available icons see fontawesome.com/icons
   - {title: Mail, icon: envelope, url: "mailto:gabertan.colton@gmail.com"}
   - {title: Github, icon: github, url: "https://github.com/colton-gabertan"}
-  - {title: Linkedin, icon: linkedin, url: "https://www.linkedin.com/in/colton-gabertan-463836209/"}
+  - {title: Linkedin, icon: linkedin, url: "https://www.linkedin.com/in/colton-gabertan/"}
 
 comments:
 #  disqus_shortname: ""    # see https://disqus.com/
