@@ -26,3 +26,10 @@ Since its conception, it has been widely integrated with other tools in the malw
 [Vivisect]: https://vivisect.readthedocs.io/en/latest/vivisect/intro.html
 [Binary Ninja]: https://binary.ninja/
 [Ghidra]: https://ghidra-sre.org/
+
+## What is Ghidra?
+<img src="/assets/ghidra_logo.png">
+
+[Ghidra] is the most popular open-source disassembly framework used by the greater reverse engineering and malware analysis community. It was created and is maintained by the National Security Agency and has garnered its popularity due to its effectiveness, support, and for being free to use. It is fully equipped with a user interface, scripting console, and headless mode. Other features that is sports are the ability to act as a server as well as a powerful decompilation engine alongside its disassembly capabilities. 
+
+<img src="/assets/ghidra_ui.png">
