@@ -50,4 +50,10 @@ Since its conception, it has been widely integrated with other tools used by the
 
 [Ghidrathon] solves the biggest issue that has been associated with Ghidra and is what ultimately opens the door for it to be integrated into a wealth of production information security analysis tools. One major issue that has held the Ghidra Framework back is that it is written in Java and only supported Jython, a Java-Python2 scripting interface. As Python has evolved and matured, many tools have opted to be written in and designed for Python3, which is incompatible with the Jython interface for the Ghidra API.  
 
+**Visualization of How Ghidrathon Works:**
 
+<img src="/assets/ghidrathon_vis.gif">
+> Ghidrathon leverages another project called [Jep] to implant a CPython interpreter into the Java Virtual Machine (JVM) via the Java Native Interface (JNI). This allows the JVM to to execute Ghidra's Java bytecode as well as inject Python3 code to be executed by the CPython interpreter(s). Ghidrathon then bridges JVM as well as Python3 data in order to expose the Ghidra API and associated objects to interact seamlessly together. 
+
+[Ghidrathon]: https://www.mandiant.com/resources/blog/ghidrathon-snaking-ghidra-python-3-scripting
+[Jep]: https://github.com/ninia/jep
