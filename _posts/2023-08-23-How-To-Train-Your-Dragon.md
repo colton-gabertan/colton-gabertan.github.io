@@ -17,6 +17,10 @@ This project came with many hurdles to overcome such as:
 
 capa is the Mandiant FLARE Team's open-source project that allows the automated identification of capabilities in executable files. This tool is ran against suspected malware samples to map its extracted functionality to the Mitre ATT&CK Framework and allows reverse engineers to jump straight into areas of interest. This results in significantly reducing the time spent sifting through overwhelming amounts of low-level code to gain actionable intelligence against threats lurking within binaries. 
 
-Since its conception, it has been widely integrated with other tools in the malware analysis and reverse engineering community. These tools include VirusTotal, HexRay's IDA Pro, Vivisect, Binary Ninja, and now Ghidra. 
+Since its conception, it has been widely integrated with other tools in the malware analysis and reverse engineering community. These tools include [VirusTotal], [HexRay's IDA Pro], [Vivisect], [Binary Ninja], and now [Ghidra]. 
 
-
+[VirusTotal]: https://blog.virustotal.com/2023/01/mandiants-capa-goresym-to-reinforce-vts.html
+[HexRay's IDA Pro]: https://hex-rays.com/IDA-pro/
+[Vivisect]: https://vivisect.readthedocs.io/en/latest/vivisect/intro.html
+[Binary Ninja]: https://binary.ninja/
+[Ghidra]: https://ghidra-sre.org/
