@@ -13,9 +13,7 @@ This project came with many hurdles to overcome such as:
 
 
 ## What is capa?
-<p align="center" width=100%>
-    <img src="/assets/capa_logo.png">
-</p>
+<img align="center" src="/assets/capa_logo.png">
 
 capa is the Mandiant FLARE Team's open-source project that automatically identifies capabilities in executable files. This tool is ran against suspected malware samples to map its extracted functionality to the Mitre ATT&CK Framework and allows reverse engineers to jump straight into areas of interest. This results in significantly reducing the time spent sifting through overwhelming amounts of low-level code to gain actionable intelligence against threats lurking within binaries. 
 
@@ -30,9 +28,7 @@ Since its conception, it has been widely integrated with other tools in the malw
 [Ghidra]: https://ghidra-sre.org/
 
 ## What is Ghidra?
-<p align="center" width=100%>
-    <img src="/assets/ghidra_logo.png" height=300 width=400>
-</p>
+<img align="center" src="/assets/ghidra_logo.png" height=250 width=400>
 
 [Ghidra] is the most popular open-source disassembly framework used by the greater reverse engineering and malware analysis community. It was created and is maintained by the National Security Agency and has garnered its popularity due to its effectiveness, support, and for being free to use. It is fully equipped with a user interface, scripting console, and headless mode. Other features that is sports are the ability to act as a server as well as a powerful decompilation engine alongside its disassembly capabilities. 
 
