@@ -14,19 +14,19 @@ This project came with many hurdles to overcome such as:
 
 ## What is capa?
 <div align="center">
-    <img src="/assets/capa_logo.png">
+    <img src="/assets/capa_logo.png" height=200 width=400>
 </div>
 
 capa is the Mandiant FLARE Team's open-source project that automatically identifies capabilities in executable files. This tool is ran against suspected malware samples to map its extracted functionality to the [Mitre ATT&CK Framework] and allows reverse engineers to jump straight into areas of interest. This results in significantly reducing the time spent sifting through overwhelming amounts of low-level code to gain actionable intelligence against threats lurking within binaries. 
 
 <img src="/assets/capa_run.gif">
 
-Since its conception, it has been widely integrated with other tools used by the malware analysis and reverse engineering community. These tools include: 
-* [VirusTotal] 
-* [HexRay's IDA Pro] 
-* [Vivisect] 
-* [Dnfile] 
-* [Binary Ninja] 
+>Since its conception, it has been widely integrated with other tools used by the malware analysis and reverse engineering community. These tools include: 
+>* [VirusTotal] 
+>* [HexRay's IDA Pro] 
+>* [Vivisect] 
+>* [Dnfile] 
+>* [Binary Ninja] 
 
 [Mitre ATT&CK Framework]: https://attack.mitre.org/
 [VirusTotal]: https://blog.virustotal.com/2023/01/mandiants-capa-goresym-to-reinforce-vts.html
@@ -37,12 +37,14 @@ Since its conception, it has been widely integrated with other tools used by the
 
 ## What is Ghidra?
 <div align="center">
-    <img src="/assets/ghidra_logo.png" height=250 width=400>
+    <img src="/assets/ghidra_logo.png" height=200 width=400>
 </div>
 
 [Ghidra] is the most popular open-source disassembly framework used by the reverse engineering and malware analysis community. It was created and is maintained by the National Security Agency. Ghidra has garnered its popularity due to its effectiveness, support, and for being free to use. It is fully equipped with a user interface, scripting console, and headless mode. Other features that it sports are the ability to act as a server as well as having a powerful decompilation engine alongside its disassembly capabilities. 
 
 <img src="/assets/ghidra_ui.png">
+
+> Because of its popularity, a huge motivation for the GSoC project was to bring capa into the hands of analysts who prefered to work using Ghidra as their main tool.
 
 [Ghidra]: https://ghidra-sre.org/
 
@@ -53,6 +55,7 @@ Since its conception, it has been widely integrated with other tools used by the
 **Visualization of How Ghidrathon Works:**
 
 <img src="/assets/ghidrathon_vis.gif">
+
 > Ghidrathon leverages another project called [Jep] to implant a CPython interpreter into the Java Virtual Machine (JVM) via the Java Native Interface (JNI). This allows the JVM to to execute Ghidra's Java bytecode as well as inject Python3 code to be executed by the CPython interpreter(s). Ghidrathon then bridges JVM as well as Python3 data in order to expose the Ghidra API and associated objects to interact seamlessly together. 
 
 [Ghidrathon]: https://www.mandiant.com/resources/blog/ghidrathon-snaking-ghidra-python-3-scripting
