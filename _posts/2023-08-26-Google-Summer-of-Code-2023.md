@@ -53,17 +53,17 @@ The final two deliverables of the project were designed to help with the continu
 
 # Github Contributions
 
-| Deliverable | Issue | Pull Request |
-|---|---|---|
-| Global Feature Extraction | [Ghidra: Global Feature Extraction](https://github.com/mandiant/capa/issues/1507) | [Ghidra: Implement Global Feature Extraction](https://github.com/mandiant/capa/pull/1526)
-| File Feature Extraction | https://github.com/mandiant/capa/issues/1508 | https://github.com/mandiant/capa/pull/1564
-| Function Feature Extraction | https://github.com/mandiant/capa/issues/1509 | https://github.com/mandiant/capa/pull/1597
-| Basic Block Feature Extraction | https://github.com/mandiant/capa/issues/1510 | https://github.com/mandiant/capa/pull/1637
-| Instruction Feature Extraction | https://github.com/mandiant/capa/issues/1511 | https://github.com/mandiant/capa/pull/1670
-| CI Workflow | https://github.com/mandiant/capa/issues/1505 | https://github.com/mandiant/capa/pull/1529
-| Ghidra Backend Unit Test | N/a | https://github.com/mandiant/capa/pull/1727
+| Deliverable | Pull Request |
+|---|---|
+| Global Feature Extraction | [Ghidra: Implement Global Feature Extraction](https://github.com/mandiant/capa/pull/1526)
+| File Feature Extraction | [Ghidra: Implement File Feature Extraction](https://github.com/mandiant/capa/pull/1564)
+| Function Feature Extraction | [Ghidra: Implement Function Feature Extraction](https://github.com/mandiant/capa/pull/1597)
+| Basic Block Feature Extraction | [Ghidra: Implement Basic Block Feature Extraction](https://github.com/mandiant/capa/pull/1637)
+| Instruction Feature Extraction | [Ghidra: Implement Instruction Feature Extraction](https://github.com/mandiant/capa/pull/1670)
+| CI Workflow | [Ghidra: Implement CI Workflow](https://github.com/mandiant/capa/pull/1529)
+| Ghidra Backend Unit Test | [Ghidra: Implement Unit Test](https://github.com/mandiant/capa/pull/1727)
 
-All tracking of this project may be accessed via: https://github.com/mandiant/capa/pulls?q=is%3Apr+label%3Aghidra
+All tracking of this project may be accessed via: [capa-ghidra pull requests](https://github.com/mandiant/capa/pulls?q=is%3Apr+label%3Aghidra)
 
 
 
