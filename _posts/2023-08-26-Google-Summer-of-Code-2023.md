@@ -63,8 +63,113 @@ The final two deliverables of the project were designed to help with the continu
 | CI Workflow | [Ghidra: Implement CI Workflow](https://github.com/mandiant/capa/pull/1529)
 | Ghidra Backend Unit Test | [Ghidra: Implement Unit Test](https://github.com/mandiant/capa/pull/1727)
 
-All tracking of this project may be accessed via: [capa-ghidra pull requests](https://github.com/mandiant/capa/pulls?q=is%3Apr+label%3Aghidra)
+All tracking of this project may be accessed via: [capa-ghidra pull requests](https://github.com/mandiant/capa/pulls?q=is%3Apr+label%3Aghidra). The main feature branch used to track GSoC-associated changes may be accessed [here](https://github.com/mandiant/capa/tree/backend-ghidra)
 
+# Mini Demo
+
+### Example: Ghidra Feature Extractor vs. Practical Malware Analysis Lab 16-01.exe_
+
+<img src="/assets/gsoc_demo.gif">
+
+### capa Ghidra Feature Extractor Report
+
+```
+wumbo@flarenix:~/capa$ analyzeHeadless ~/Desktop/ghidra_projects/ capa_test -process 'Practical Malware Analysis Lab 16-01.exe_' -ScriptPath ./capa/ghidra/ -PostScript capa_ghidra.py "./rules"
+[...]
+ (AutoAnalysisManager)
+INFO  REPORT: Analysis succeeded for file: /Practical Malware Analysis Lab 16-01.exe_ (HeadlessAnalyzer)
+INFO  SCRIPT: /home/wumbo/capa/./capa/ghidra/capa_ghidra.py (HeadlessAnalyzer)
+┍━━━━━━━━━━━━━━━━━━━━━━━━┯━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┑
+│ md5                    │ 7faafc7e4a5c736ebfee6abbbc812d80                                                   │
+│ sha1                   │                                                                                    │
+│ sha256                 │ 309217d8088871e09a7a03ee68ee46f60583a73945006f95021ec85fc1ec959e                   │
+│ os                     │ windows                                                                            │
+│ format                 │ Portable Executable (PE)                                                           │
+│ arch                   │ x86                                                                                │
+│ path                   │ /home/wumbo/capa/./tests/data/Practical Malware Analysis Lab 16-01.exe_            │
+┕━━━━━━━━━━━━━━━━━━━━━━━━┷━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┙
+
+┍━━━━━━━━━━━━━━━━━━━━━━━━┯━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┑
+│ ATT&CK Tactic          │ ATT&CK Technique                                                                   │
+┝━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┥
+│ DEFENSE EVASION        │ Indicator Removal::File Deletion T1070.004                                         │
+│                        │ Indicator Removal::Timestomp T1070.006                                             │
+│                        │ Modify Registry T1112                                                              │
+├────────────────────────┼────────────────────────────────────────────────────────────────────────────────────┤
+│ DISCOVERY              │ File and Directory Discovery T1083                                                 │
+│                        │ Query Registry T1012                                                               │
+│                        │ System Information Discovery T1082                                                 │
+├────────────────────────┼────────────────────────────────────────────────────────────────────────────────────┤
+│ EXECUTION              │ Command and Scripting Interpreter T1059                                            │
+│                        │ Shared Modules T1129                                                               │
+│                        │ System Services::Service Execution T1569.002                                       │
+├────────────────────────┼────────────────────────────────────────────────────────────────────────────────────┤
+│ PERSISTENCE            │ Create or Modify System Process::Windows Service T1543.003                         │
+┕━━━━━━━━━━━━━━━━━━━━━━━━┷━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┙
+
+┍━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┯━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┑
+│ MBC Objective               │ MBC Behavior                                                                  │
+┝━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┥
+│ ANTI-BEHAVIORAL ANALYSIS    │ Debugger Detection::Process Environment Block BeingDebugged [B0001.035]       │
+│                             │ Debugger Detection::Process Environment Block NtGlobalFlag [B0001.036]        │
+├─────────────────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│ COMMUNICATION               │ Interprocess Communication::Create Pipe [C0003.001]                           │
+├─────────────────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│ DEFENSE EVASION             │ Self Deletion::COMSPEC Environment Variable [F0007.001]                       │
+├─────────────────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│ DISCOVERY                   │ File and Directory Discovery [E1083]                                          │
+│                             │ System Information Discovery [E1082]                                          │
+├─────────────────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│ EXECUTION                   │ Command and Scripting Interpreter [E1059]                                     │
+├─────────────────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│ FILE SYSTEM                 │ Copy File [C0045]                                                             │
+│                             │ Delete File [C0047]                                                           │
+│                             │ Get File Attributes [C0049]                                                   │
+│                             │ Read File [C0051]                                                             │
+│                             │ Writes File [C0052]                                                           │
+├─────────────────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│ OPERATING SYSTEM            │ Environment Variable::Set Variable [C0034.001]                                │
+│                             │ Registry::Delete Registry Value [C0036.007]                                   │
+│                             │ Registry::Query Registry Value [C0036.006]                                    │
+│                             │ Registry::Set Registry Key [C0036.001]                                        │
+├─────────────────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│ PROCESS                     │ Create Process [C0017]                                                        │
+│                             │ Terminate Process [C0018]                                                     │
+┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┷━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┙
+
+┍━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┯━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┑
+│ Capability                                           │ Namespace                                            │
+┝━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┥
+│ check for PEB BeingDebugged flag (24 matches)        │ anti-analysis/anti-debugging/debugger-detection      │
+│ check for PEB NtGlobalFlag flag (24 matches)         │ anti-analysis/anti-debugging/debugger-detection      │
+│ self delete                                          │ anti-analysis/anti-forensic/self-deletion            │
+│ timestomp file                                       │ anti-analysis/anti-forensic/timestomp                │
+│ create pipe                                          │ communication/named-pipe/create                      │
+│ accept command line arguments                        │ host-interaction/cli                                 │
+│ query environment variable (4 matches)               │ host-interaction/environment-variable                │
+│ set environment variable                             │ host-interaction/environment-variable                │
+│ get common file path                                 │ host-interaction/file-system                         │
+│ copy file                                            │ host-interaction/file-system/copy                    │
+│ delete file                                          │ host-interaction/file-system/delete                  │
+│ check if file exists                                 │ host-interaction/file-system/exists                  │
+│ get file attributes                                  │ host-interaction/file-system/meta                    │
+│ read file on Windows (2 matches)                     │ host-interaction/file-system/read                    │
+│ write file on Windows (3 matches)                    │ host-interaction/file-system/write                   │
+│ check OS version                                     │ host-interaction/os/version                          │
+│ create process on Windows (2 matches)                │ host-interaction/process/create                      │
+│ terminate process (2 matches)                        │ host-interaction/process/terminate                   │
+│ query or enumerate registry value (2 matches)        │ host-interaction/registry                            │
+│ set registry value                                   │ host-interaction/registry/create                     │
+│ delete registry value                                │ host-interaction/registry/delete                     │
+│ create service                                       │ host-interaction/service/create                      │
+│ delete service                                       │ host-interaction/service/delete                      │
+│ modify service                                       │ host-interaction/service/modify                      │
+│ link function at runtime on Windows                  │ linking/runtime-linking                              │
+│ persist via Windows service                          │ persistence/service                                  │
+┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┷━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┙
+
+Script /home/wumbo/capa/./capa/ghidra/capa_ghidra.py called exit with code 0
+```
 
 
 
