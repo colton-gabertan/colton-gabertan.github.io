@@ -44,7 +44,7 @@ capa is the Mandiant FLARE Team's open-source project that automatically identif
 
 <img src="/assets/ghidra_ui.png">
 
-> Because of its popularity, a huge motivation for the GSoC project was to bring capa into the hands of analysts who prefered to work using Ghidra as their main tool.
+> Because of its popularity, a huge motivation for the GSoC project was to bring capa into the hands of analysts who prefer to use Ghidra as their main tool.
 
 [Ghidra]: https://ghidra-sre.org/
 
@@ -56,7 +56,10 @@ capa is the Mandiant FLARE Team's open-source project that automatically identif
 
 <img src="/assets/ghidrathon_vis.gif">
 
-> Ghidrathon leverages another project called [Jep] to implant a CPython interpreter into the Java Virtual Machine (JVM) via the Java Native Interface (JNI). This allows the JVM to to execute Ghidra's Java bytecode as well as inject Python3 code to be executed by the CPython interpreter(s). Ghidrathon then bridges JVM as well as Python3 data in order to expose the Ghidra API and associated objects to interact seamlessly together. 
+> Ghidrathon leverages another project called [Jep] to implant a CPython interpreter into the Java Virtual Machine (JVM) via the Java Native Interface (JNI). This allows the JVM to to execute Ghidra's Java bytecode as well as inject Python3 code to be executed by the CPython interpreter(s). Ghidrathon then bridges JVM & Python3 data in order to expose the Ghidra API and associated objects to interact seamlessly together. 
 
 [Ghidrathon]: https://www.mandiant.com/resources/blog/ghidrathon-snaking-ghidra-python-3-scripting
 [Jep]: https://github.com/ninia/jep
+
+## Training the Dragon:
+
