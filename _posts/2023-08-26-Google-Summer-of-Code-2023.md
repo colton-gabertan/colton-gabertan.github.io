@@ -20,7 +20,7 @@ Since its conception, capa has received industry-wide adoption via platform inte
 
 All planned deliverables for the Google Summer of Code (GSoC) period have been completed and integrated. The main functionality, the feature extractors, serve as the core of the Ghidra backend, allowing us to tap into the rich databases populated by Ghidra analysis. In order to implement the Ghidra feature extractors, capa is designed to use an abstract `FeatureExtractor` class for each backend. In my case, we used the `GhidraFeatureExtractor` class to initialize capa's access to the Ghidra databases. 
 
-After defining the class, I created a set of Ghidra feature extractor modules, namely `global_.py`, `file.py`, `basicblock.py`, and `insn.py` respectively. Each feature extractor module becomes scoped by increasing granularity. The scopes are as follows:
+After defining the class, I created a set of Ghidra feature extractor modules, namely `global_.py`, `file.py`, `function.py`, `basicblock.py`, and `insn.py` respectively. Each feature extractor module becomes scoped by increasing granularity. The scopes are as follows:
 
 * Global Scope
   * Operating System detection
@@ -31,6 +31,10 @@ After defining the class, I created a set of Ghidra feature extractor modules, n
   * File strings
   * Statically-linked library functions
   * Embedded portable executable (PE) file detection
+* Function Scope
+  * Function call references
+  * Loops within functions
+  * Recursive function calls
 * Basic Block Scope
   * Tight loops
   * Embedded stack strings
@@ -47,6 +51,19 @@ After defining the class, I created a set of Ghidra feature extractor modules, n
 
 The final two deliverables of the project were designed to help with the continuity of developing and integrating the Ghidra backend. capa uses Github Actions runners to run a Continuous Integration (CI) workflow that executes automated unit tests for each backend. For Ghidra feature extraction, it is tested on two concurrently running Ubuntu servers that use Python 3.8 and 3.11. Each server is automatically configured with capa and its associated dependencies, the latest Ghidra release, and the latest Ghidrathon release. After configuration, the runner executes an automated unit test via pytest. The automated unit test runs capa with the Ghidra feature extractor against a sample to assert that specific features from each associated scope are found.
 
+# Github Contributions
+
+| Deliverable | Issue | Pull Request |
+|---|---|---|
+| Global Feature Extraction | https://github.com/mandiant/capa/issues/1507 | https://github.com/mandiant/capa/pull/1526
+| File Feature Extraction | https://github.com/mandiant/capa/issues/1508 | https://github.com/mandiant/capa/pull/1564
+| Function Feature Extraction | https://github.com/mandiant/capa/issues/1509 | https://github.com/mandiant/capa/pull/1597
+| Basic Block Feature Extraction | https://github.com/mandiant/capa/issues/1510 | https://github.com/mandiant/capa/pull/1637
+| Instruction Feature Extraction | https://github.com/mandiant/capa/issues/1511 | https://github.com/mandiant/capa/pull/1670
+| CI Workflow | https://github.com/mandiant/capa/issues/1505 | https://github.com/mandiant/capa/pull/1529
+| Ghidra Backend Unit Test | N/a | https://github.com/mandiant/capa/pull/1727
+
+All tracking of this project may be accessed via: https://github.com/mandiant/capa/pulls?q=is%3Apr+label%3Aghidra
 
 
 
