@@ -7,7 +7,9 @@ layout: post
     <img src="/assets/ghidra_backend_logo.png">
 </div>
 
-**Description:** capa is the Mandiant (Google Cloud) FLARE team's open source tool that is used to automatically identify capabilities of programs. Reverse engineers and malware analysts run capa against suspected malware samples in order to uncover and identify underlying functionality. This allows analysts to report on actionable intelligence against the threats lurking within binaries. Since its conception, capa has received industry-wide adoption via platform integrations and by supporting several popular backends spawned from other open-source & proprietary infosec projects. These projects include: Virustotal, IDA Pro, Vivisect, Dnfile, and Binary Ninja. My goal this summer was to further expand capa adoption by integrating one of the most popular software reverse engineering frameworks, Ghidra, as a backend.  
+capa is the Mandiant (Google Cloud) FLARE team's open source tool that is used to automatically identify capabilities of programs. Reverse engineers and malware analysts run capa against suspected malware samples in order to uncover and identify underlying functionality. This allows analysts to report on actionable intelligence against the threats lurking within binaries. 
+
+Since its conception, capa has received industry-wide adoption via platform integrations and by supporting several popular backends spawned from other open-source & proprietary infosec projects. These projects include: Virustotal, IDA Pro, Vivisect, Dnfile, and Binary Ninja. My goal this summer was to further expand capa adoption by integrating one of the most popular software reverse engineering frameworks, Ghidra, as a backend.  
 
 
 # Deliverables and Status
