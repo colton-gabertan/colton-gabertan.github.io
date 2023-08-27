@@ -55,7 +55,7 @@ The final two deliverables of the project were designed to help with the continu
 
 | Deliverable | Issue | Pull Request |
 |---|---|---|
-| Global Feature Extraction | https://github.com/mandiant/capa/issues/1507 | https://github.com/mandiant/capa/pull/1526
+| Global Feature Extraction | [Ghidra: Global Feature Extraction](https://github.com/mandiant/capa/issues/1507) | [Ghidra: Implement Global Feature Extraction](https://github.com/mandiant/capa/pull/1526)
 | File Feature Extraction | https://github.com/mandiant/capa/issues/1508 | https://github.com/mandiant/capa/pull/1564
 | Function Feature Extraction | https://github.com/mandiant/capa/issues/1509 | https://github.com/mandiant/capa/pull/1597
 | Basic Block Feature Extraction | https://github.com/mandiant/capa/issues/1510 | https://github.com/mandiant/capa/pull/1637
