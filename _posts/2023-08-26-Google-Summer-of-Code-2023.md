@@ -7,10 +7,16 @@ layout: post
     <img src="/assets/ghidra_backend_logo.png">
 </div>
 
-capa is the Mandiant (Google Cloud) FLARE team's open source tool that is used to automatically identify capabilities of programs. Reverse engineers and malware analysts run capa against suspected malware samples in order to uncover and identify underlying functionality. This allows analysts to report on actionable intelligence against the threats lurking within binaries. 
+capa is the Mandiant FLARE team's open source tool that is used to automatically identify capabilities of programs. Reverse engineers and malware analysts run capa against suspected malware in order to uncover its underlying functionality by matching extracted features to a well-defined collection of rules. This allows analysts to quickly narrow their scope down to areas of interest within a sample, taking advantage of significant speed gains provided by years of cummulative research.  
 
-Since its conception, capa has received industry-wide adoption via platform integrations and by supporting several popular backends spawned from other open-source & proprietary infosec projects. These projects include: Virustotal, IDA Pro, Vivisect, Dnfile, and Binary Ninja. My goal this summer was to further expand capa adoption by integrating one of the most popular software reverse engineering frameworks, Ghidra, as a backend.  
+Since its conception, capa has received industry-wide adoption via platform integrations and by supporting several popular backends spawned from other open-source & proprietary infosec projects. These projects include: [Virustotal], [HexRay's IDA Pro], [Vivisect], [Dnfile], and [Binary Ninja]. My goal this summer was to further expand capa adoption by integrating one of the most popular software reverse engineering frameworks, Ghidra, as a backend.  
 
+[Mitre ATT&CK Framework]: https://attack.mitre.org/
+[VirusTotal]: https://blog.virustotal.com/2023/01/mandiants-capa-goresym-to-reinforce-vts.html
+[HexRay's IDA Pro]: https://hex-rays.com/IDA-pro/
+[Vivisect]: https://vivisect.readthedocs.io/en/latest/vivisect/intro.html
+[Dnfile]: https://github.com/malwarefrank/dnfile
+[Binary Ninja]: https://binary.ninja/
 
 # Deliverables and Status
 
@@ -18,7 +24,7 @@ Since its conception, capa has received industry-wide adoption via platform inte
     <img src="/assets/gsoc_project_progress.png">
 </div>
 
-All planned deliverables for the Google Summer of Code (GSoC) period have been completed and integrated. The main functionality, the feature extractors, serve as the core of the Ghidra backend, allowing us to tap into the rich databases populated by Ghidra analysis. In order to implement the Ghidra feature extractors, capa is designed to use an abstract `FeatureExtractor` class for each backend. In my case, we used the `GhidraFeatureExtractor` class to initialize capa's access to the Ghidra databases. 
+All planned deliverables for the Google Summer of Code (GSoC) period have been completed and integrated. The main functionality, the feature extractors, serve as the core of the Ghidra backend, allowing us to tap into rich databases populated by Ghidra analysis. In order to implement the Ghidra feature extractors, capa is designed to use an abstract `FeatureExtractor` class for each backend. In my case, we used the `GhidraFeatureExtractor` class to initialize capa's access to the Ghidra databases. 
 
 After defining the class, I created a set of Ghidra feature extractor modules, namely `global_.py`, `file.py`, `function.py`, `basicblock.py`, and `insn.py` respectively. Each feature extractor module becomes scoped by increasing granularity. The scopes are as follows:
 
@@ -171,5 +177,40 @@ INFO  SCRIPT: /home/wumbo/capa/./capa/ghidra/capa_ghidra.py (HeadlessAnalyzer)
 Script /home/wumbo/capa/./capa/ghidra/capa_ghidra.py called exit with code 0
 ```
 
+# Challenges
+
+The Ghidra feature extractor was only made possible by another Mandiant FLARE team project, [Ghidrathon](https://github.com/mandiant/Ghidrathon). Ghidra natively supports Jython, a Java-Python integration that is only compatible with Python 2. This rendered Python 3 modules and projects, such as capa, incompatible with the native scripting interface. Additionally, Ghidrathon had not been used to this extent, so a large portion of development went towards uncovering potential issues that may arise in similar projects.   
+
+### Found Ghidrathon Issues -
+
+**Data Type Conversion:**
+
+The first problem encountered was identifying data type conversions to be handled as we passed these constructs to be processed by either the Java side or the Python2 side. The most prominent example was byte extraction. Bytes returned by calls to the Ghidra API would be returned as `singed ints`, versus a compatible Python 3 `bytes` type. 
+
+This required us to handle the conversion in Python 2 before passing this data to the appropriate routines and functions. To handle this conversion, the first step was to convert the `signed ints` to `unsigned ints`. Fortunately, all this required was a bitwise `& 0xFF` for each `int`. From there, we needed to cast it to the Python 3 `bytes` type. The original implementation took advantage of the builtin `to_bytes()` function; however, our performance testing revealed that this was incredibly inefficient.
+
+To remediate the performance issue, we took advantage of Python 2 list comprehensions as well as the builtin `byte()` casting. This improved the speed of our conversions approximately 100x. The pull request addressing this issue may be found [here](https://github.com/mandiant/capa/pull/1761). 
+
+**CPython Module Accessability:**
+
+Ghidrathon implants CPython interpreters into the Java Virtual Machine (JVM) in order to allow Python 2 scripts to be injected into the JVM. Originally, this caused issues as re-importing a Python module would cause crashes, due to modules not supporting multiple instances of an interpreter within the same process. Because we run everything from a single Java process for Ghidra feature extraction, this required an entire re-architecting of Ghidrathon.   
+
+To remedy this issue, Ghidrathon implemented shared interpreters in [Ghidrathon v1.2.0](https://github.com/mandiant/Ghidrathon/releases/tag/v2.2.0) to allow accessability of each module to each shared interpreter. 
+
+**Maintaining the Ghidra State of Objects for each CPython Shared Interpreter:**
+
+After implementing shared interpreters, this also meant that the context of each object exposed to the interpreters remained the same for each one. This resulted in sequential runs of the Ghidra feature extractor to be using the wrong state of an object, therefore producing incorrect results. Ghidrathon does the crucial job of exposing necessary objects that relate to each Ghidra database. Namely, the Ghidra feature extractor heavily makes use of `currentProgram` and `monitor` to access data needed for capa processing.  
+
+These objects were origianlly accessible as normal Python 2 objects, for example, `currentProgram.getFunctionManager()`. However, to maintain the proper state, these exposed objects were added to the `builtins` scope, changing the way we interact with them. Now, the same line as above would need to be treated as a call to a module, i.e. `currentProgram().getFunctionManager()`.
+
+These changes were addressed in the release of [Ghidrathon v2.0.0](https://github.com/mandiant/Ghidrathon/releases/tag/v3.0.0).
+
+### Conclusion -
+
+As Ghidrathon had been a relatively new and untested project, the capa: Ghidra Integration served as a great stepping stone to improving the feasability of having it support others. This contributes greatly to the industry by allowing most existing Python 2 binary analysis tooling access to the feature-rich Ghidra Framework. 
+
+# Acknowledgement:
+
+I'd like to thank the Mandiant FLARE team and all of the GSoC mentors who volunteered their time to guide myself and others. A special acknowledgement goes to my primary mentor, Mike Hunhoff. He contributed greatly to my growth by asking me the questions I failed to ask myself, providing sound advice & great design suggestions, and for the super quick Ghidrathon changes necessary to roll the project to production!
 
 
