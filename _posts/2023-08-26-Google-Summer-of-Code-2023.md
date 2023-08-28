@@ -195,7 +195,7 @@ To remediate the performance issue, we took advantage of Python 2 list comprehen
 
 Ghidrathon implants CPython interpreters into the Java Virtual Machine (JVM) in order to allow Python 2 scripts to be injected into the JVM. Originally, this caused issues as re-importing a Python module would cause crashes, due to modules not supporting multiple instances of an interpreter within the same process. Because we run everything from a single Java process for Ghidra feature extraction, this required an entire re-architecting of Ghidrathon.   
 
-To remedy this issue, Ghidrathon implemented shared interpreters in [Ghidrathon v1.2.0](https://github.com/mandiant/Ghidrathon/releases/tag/v2.2.0) to allow accessability of each module to each shared interpreter. 
+To remedy this issue, Ghidrathon implemented shared interpreters in [Ghidrathon v2.2.0](https://github.com/mandiant/Ghidrathon/releases/tag/v2.2.0) to allow accessability of each module to each shared interpreter. 
 
 **Maintaining the Ghidra State of Objects for each CPython Shared Interpreter:**
 
