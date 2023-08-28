@@ -18,6 +18,7 @@ Since its conception, capa has received industry-wide adoption via platform inte
 [Dnfile]: https://github.com/malwarefrank/dnfile
 [Binary Ninja]: https://binary.ninja/
 
+
 # Deliverables and Status
 
 <div align="center">
