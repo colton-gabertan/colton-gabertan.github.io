@@ -21,7 +21,7 @@ Since its conception, capa has received industry-wide adoption via platform inte
 # Deliverables and Status
 
 <div align="center">
-    <img src="/assets/gsoc_project_progress.png">
+    <img src="/assets/gsoc_project_progress_updated.png">
 </div>
 
 All planned deliverables for the Google Summer of Code (GSoC) period have been completed and integrated. The main functionality, the feature extractors, serve as the core of the Ghidra backend, allowing us to tap into rich databases populated by Ghidra analysis. In order to implement the Ghidra feature extractors, capa is designed to use an abstract `FeatureExtractor` class for each backend. In my case, I implemented a new `GhidraFeatureExtractor` class to initialize capa's access to the Ghidra databases. 
