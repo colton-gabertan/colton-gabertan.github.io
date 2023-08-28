@@ -9,11 +9,10 @@ layout: post
 
 [capa](https://github.com/mandiant/capa) is the Mandiant FLARE team's open source tool that is used to automatically identify capabilities of programs. Reverse engineers and malware analysts run capa against suspected malware in order to uncover its underlying functionality by matching extracted features to a well-defined collection of rules. This allows analysts to quickly narrow their scope down to areas of interest within a sample, taking advantage of significant speed gains provided by years of cumulative  research.  
 
-Since its conception, capa has received industry-wide adoption via platform integrations and by supporting several popular backends spawned from other open-source & proprietary infosec projects. These projects include: [Virustotal], [HexRay's IDA Pro], [Vivisect], [Dnfile], and [Binary Ninja]. My goal this summer was to further expand capa adoption by integrating one of the most popular software reverse engineering frameworks, [Ghidra](https://ghidra-sre.org/), as a backend.  
+Since its conception, capa has received industry-wide adoption via platform integrations and by supporting several popular backends spawned from other open-source & proprietary infosec projects. These projects include: [VirusTotal], [HexRay's IDA Pro], [vivisect], [dnfile], and [Binary Ninja]. My goal this summer was to further expand capa adoption by integrating a popular, open source reverse engineering framework, [Ghidra](https://ghidra-sre.org/), as a backend. Adding support of capa for a framework like Ghidra expands capa analysis to users who wish to tightly integrate results with their disassembly framework of choice. 
 
-[Mitre ATT&CK Framework]: https://attack.mitre.org/
 [VirusTotal]: https://blog.virustotal.com/2023/01/mandiants-capa-goresym-to-reinforce-vts.html
-[HexRay's IDA Pro]: https://hex-rays.com/IDA-pro/
+[HexRay's IDA Pro]: https://hex-rays.com/blog/plugin-focus-capa-explorer/
 [Vivisect]: https://vivisect.readthedocs.io/en/latest/vivisect/intro.html
 [Dnfile]: https://github.com/malwarefrank/dnfile
 [Binary Ninja]: https://binary.ninja/
