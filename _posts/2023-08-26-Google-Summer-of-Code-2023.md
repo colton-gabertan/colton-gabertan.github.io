@@ -24,12 +24,12 @@ Since its conception, capa has received industry-wide adoption via platform inte
     <img src="/assets/gsoc_project_progress.png">
 </div>
 
-All planned deliverables for the Google Summer of Code (GSoC) period have been completed and integrated. The main functionality, the feature extractors, serve as the core of the Ghidra backend, allowing us to tap into rich databases populated by Ghidra analysis. In order to implement the Ghidra feature extractors, capa is designed to use an abstract `FeatureExtractor` class for each backend. In my case, we used the `GhidraFeatureExtractor` class to initialize capa's access to the Ghidra databases. 
+All planned deliverables for the Google Summer of Code (GSoC) period have been completed and integrated. The main functionality, the feature extractors, serve as the core of the Ghidra backend, allowing us to tap into rich databases populated by Ghidra analysis. In order to implement the Ghidra feature extractors, capa is designed to use an abstract `FeatureExtractor` class for each backend. In my case, I implemented a new `GhidraFeatureExtractor` class to initialize capa's access to the Ghidra databases. 
 
-After defining the class, I created a set of Ghidra feature extractor modules, namely `global_.py`, `file.py`, `function.py`, `basicblock.py`, and `insn.py` respectively. Each feature extractor module becomes scoped by increasing granularity. The scopes are as follows:
+After defining the class, I created a set of Ghidra feature extractor modules, namely `global_.py`, `file.py`, `function.py`, `basicblock.py`, and `insn.py`. Each feature extractor module is scoped to increase granularity. The scopes are as follows:
 
 * Global Scope
-  * Operating System detection
+  * Operating system detection
   * Architecture detection
 * File Scope
   * File format & sections
@@ -47,7 +47,7 @@ After defining the class, I created a set of Ghidra feature extractor modules, n
 * Instruction Scope
   * Instruction mnemonics
   * Number and offset operands
-  * Operating System level API calls
+  * Operating system level API calls
   * Embedded bytes and strings
   * Cross-section control flow & file segment access
   * Indirect & referenced calls
@@ -69,7 +69,7 @@ The final two deliverables of the project were designed to help with the continu
 | CI Workflow | [Ghidra: Implement CI Workflow](https://github.com/mandiant/capa/pull/1529)
 | Ghidra Backend Unit Test | [Ghidra: Implement Unit Test](https://github.com/mandiant/capa/pull/1727)
 
-All tracking of this project may be accessed via: [capa-ghidra pull requests](https://github.com/mandiant/capa/pulls?q=is%3Apr+label%3Aghidra). The main feature branch used to track GSoC-associated changes may be accessed [here](https://github.com/mandiant/capa/tree/backend-ghidra)
+All tracking of this project may be accessed via: [capa-ghidra pull requests](https://github.com/mandiant/capa/pulls?q=is%3Apr+label%3Aghidra). The main feature branch used to track GSoC-associated changes may be accessed [here](https://github.com/mandiant/capa/tree/backend-ghidra).
 
 # Mini Demo
 
