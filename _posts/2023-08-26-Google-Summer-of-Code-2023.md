@@ -204,7 +204,7 @@ After implementing shared interpreters, this also meant that the context of each
 
 These objects were originally accessible as normal Python 3 objects, for example, `currentProgram.getFunctionManager()`. However, to maintain the proper state, these exposed objects were added to the `builtins` scope, changing the way we interact with them. Now, the same line as above would need to be treated as a call to a module, i.e. `currentProgram().getFunctionManager()`.
 
-These changes were addressed in the release of [Ghidrathon v2.0.0](https://github.com/mandiant/Ghidrathon/releases/tag/v3.0.0).
+These changes were addressed in the release of [Ghidrathon v3.0.0](https://github.com/mandiant/Ghidrathon/releases/tag/v3.0.0).
 
 ### Conclusion -
 
