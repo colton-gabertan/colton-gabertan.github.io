@@ -7,7 +7,7 @@ layout: post
     <img src="/assets/ghidra_backend_logo.png">
 </div>
 
-capa is the Mandiant FLARE team's open source tool that is used to automatically identify capabilities of programs. Reverse engineers and malware analysts run capa against suspected malware in order to uncover its underlying functionality by matching extracted features to a well-defined collection of rules. This allows analysts to quickly narrow their scope down to areas of interest within a sample, taking advantage of significant speed gains provided by years of cummulative research.  
+capa is the Mandiant FLARE team's open source tool that is used to automatically identify capabilities of programs. Reverse engineers and malware analysts run capa against suspected malware in order to uncover its underlying functionality by matching extracted features to a well-defined collection of rules. This allows analysts to quickly narrow their scope down to areas of interest within a sample, taking advantage of significant speed gains provided by years of cumulative  research.  
 
 Since its conception, capa has received industry-wide adoption via platform integrations and by supporting several popular backends spawned from other open-source & proprietary infosec projects. These projects include: [Virustotal], [HexRay's IDA Pro], [Vivisect], [Dnfile], and [Binary Ninja]. My goal this summer was to further expand capa adoption by integrating one of the most popular software reverse engineering frameworks, Ghidra, as a backend.  
 
@@ -192,11 +192,11 @@ This required us to handle the conversion in Python 3 before passing this data t
 
 To remediate the performance issue, we took advantage of Python 3 list comprehensions as well as the builtin `byte()` casting. This improved the speed of our conversions approximately 100x. The pull request addressing this issue may be found [here](https://github.com/mandiant/capa/pull/1761). 
 
-**CPython Module Accessability:**
+**CPython Module Accessibility:**
 
 Ghidrathon implants CPython interpreters into the Java Virtual Machine (JVM) in order to allow Python 3 scripts to be injected into the JVM. Originally, this caused issues as re-importing a Python module would cause crashes, due to modules not supporting multiple instances of an interpreter within the same process. Because we run everything from a single Java process for Ghidra feature extraction, this required an entire re-architecting of Ghidrathon.   
 
-To remedy this issue, Ghidrathon implemented shared interpreters in [Ghidrathon v2.2.0](https://github.com/mandiant/Ghidrathon/releases/tag/v2.2.0) to allow accessability of each module to each shared interpreter. 
+To remedy this issue, Ghidrathon implemented shared interpreters in [Ghidrathon v2.2.0](https://github.com/mandiant/Ghidrathon/releases/tag/v2.2.0) to allow accessibility of each module to each shared interpreter. 
 
 **Maintaining the Ghidra State of Objects for each CPython Shared Interpreter:**
 
@@ -208,7 +208,7 @@ These changes were addressed in the release of [Ghidrathon v3.0.0](https://githu
 
 ### Conclusion -
 
-As Ghidrathon had been a relatively new and untested project, the capa: Ghidra Integration served as a great stepping stone to improving the feasability of having it support others. This contributes greatly to the industry by allowing most existing Python 3 binary analysis tooling access to the feature-rich Ghidra Framework. 
+As Ghidrathon had been a relatively new and untested project, the capa: Ghidra Integration served as a great stepping stone to improving the feasibility of having it support others. This contributes greatly to the industry by allowing most existing Python 3 binary analysis tooling access to the feature-rich Ghidra Framework. 
 
 # Acknowledgement:
 
