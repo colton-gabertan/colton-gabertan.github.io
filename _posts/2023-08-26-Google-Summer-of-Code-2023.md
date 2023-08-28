@@ -201,7 +201,7 @@ To remedy this issue, Ghidrathon implemented shared interpreters in [Ghidrathon 
 
 After implementing shared interpreters, this also meant that the context of each object exposed to the interpreters remained the same for each one. This resulted in sequential runs of the Ghidra feature extractor to be using the wrong state of an object, therefore producing incorrect results. Ghidrathon does the crucial job of exposing necessary objects that relate to each Ghidra database. Namely, the Ghidra feature extractor heavily makes use of `currentProgram` and `monitor` to access data needed for capa processing.  
 
-These objects were origianlly accessible as normal Python 3 objects, for example, `currentProgram.getFunctionManager()`. However, to maintain the proper state, these exposed objects were added to the `builtins` scope, changing the way we interact with them. Now, the same line as above would need to be treated as a call to a module, i.e. `currentProgram().getFunctionManager()`.
+These objects were originally accessible as normal Python 3 objects, for example, `currentProgram.getFunctionManager()`. However, to maintain the proper state, these exposed objects were added to the `builtins` scope, changing the way we interact with them. Now, the same line as above would need to be treated as a call to a module, i.e. `currentProgram().getFunctionManager()`.
 
 These changes were addressed in the release of [Ghidrathon v2.0.0](https://github.com/mandiant/Ghidrathon/releases/tag/v3.0.0).
 
