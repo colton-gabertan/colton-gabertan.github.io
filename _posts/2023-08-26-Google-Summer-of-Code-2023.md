@@ -69,7 +69,7 @@ The final two deliverables of the project were designed to help with the continu
 | CI Workflow | [Ghidra: Implement CI Workflow](https://github.com/mandiant/capa/pull/1529)
 | Ghidra Backend Unit Test | [Ghidra: Implement Unit Test](https://github.com/mandiant/capa/pull/1727)
 
-All tracking of this project may be accessed via: [capa-ghidra pull requests](https://github.com/mandiant/capa/pulls?q=is%3Apr+label%3Aghidra). The main feature branch used to track GSoC-associated changes may be accessed [here](https://github.com/mandiant/capa/tree/backend-ghidra).
+All tracking of this project may be accessed via: [capa-ghidra pull requests](https://github.com/mandiant/capa/pulls?q=is%3Apr+label%3Aghidra). The main pull request used to track GSoC-associated changes may be accessed [here](https://github.com/mandiant/capa/pull/1770).
 
 # Mini Demo
 
