@@ -67,5 +67,9 @@ After a few more configuration changes, following the procedures for each, I was
     <img src="/assets/continuousImprovement.png">
 </div>
 
+### Continuous Improvement
+
+Security is not a static state, but a continuous process. CIS benchmarks provide a valuable framework for ongoing improvement. By regularly assessing compliance statuses, organizations can adapt to new threats and refine their security practices.
+
 
 
