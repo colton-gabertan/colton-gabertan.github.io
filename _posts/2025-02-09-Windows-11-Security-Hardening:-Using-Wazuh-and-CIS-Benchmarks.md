@@ -9,6 +9,7 @@ The Center for Internet Security (CIS) is a non-profit organization that garners
 
 More information may be found here: https://learn.cisecurity.org/benchmarks
 
+
 ### Wazuh's Agentic Architecture
 
 Wazuh is an open-source security platform that combines common enterprise requirements such as endpoint security, threat detection & intelligence, and security information and event management (SIEM). It is designed to help an organization of any size protect digital assets that may be distributed across on-prem, virtualized, containerized, and cloud environments. 
