@@ -12,7 +12,7 @@ More information may be found here: https://learn.cisecurity.org/benchmarks
 
 ### Wazuh's Agentic Architecture
 
-Wazuh is an open-source security platform that combines common enterprise requirements such as endpoint security, threat detection & intelligence, and security information and event management (SIEM). It is designed to help an organization of any size protect digital assets that may be distributed across on-prem, virtualized, containerized, and cloud environments. 
+Wazuh is an open-source security platform that combines common enterprise requirements such as XDR, threat detection & intelligence, and security information and event management (SIEM). It is designed to help an organization of any size protect digital assets that may be distributed across on-prem, virtualized, containerized, and cloud environments. 
 
 It deploys as a centralized server in which we can install agents on endpoints that report back to Wazuh. For the purposes of this lab, I’ve chosen to focus on Wazuh’s out-of-the-box solution that allows for instant CIS Benchmarking on endpoints. 
 
@@ -33,7 +33,7 @@ It quickly checks-in after installation from the endpoint and immediately begins
 
 ### Configuration Assessment Findings
 
-The Wazuh Agent was able to leverage simple commands and registry checks to map against the Center for Internet Security (CIS) critical security controls as well as other frameworks such as CMMC, PCI-DSS, and SOC 2. 
+The Wazuh Agent was able to leverage simple commands and registry checks to map against the CIS Critical Security Controls as well as other frameworks such as CMMC, PCI-DSS, and SOC 2. 
 <div align="center">
     <img src="/assets/CISCompliance.png">
 </div>
